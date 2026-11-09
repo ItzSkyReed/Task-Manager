@@ -66,8 +66,8 @@ public sealed class User : BaseEntity
     /// <summary>
     /// Обновляет имя пользователя
     /// </summary>
-    /// <param name="name">Новое имя пользователя.</param>
-    /// <exception cref="ArgumentException">Выбрасывается, если имя пустое.</exception>
+    /// <param name="name">Новое имя пользователя</param>
+    /// <exception cref="ArgumentException">Выбрасывается, если имя пустое</exception>
     public void UpdateName(string name)
     {
         if (string.IsNullOrWhiteSpace(name))
@@ -79,8 +79,8 @@ public sealed class User : BaseEntity
     /// <summary>
     /// Обновляет хэш пароля пользователя
     /// </summary>
-    /// <param name="passwordHash">Новый хэш пароля.</param>
-    /// <exception cref="ArgumentException">Выбрасывается, если хэш пустой.</exception>
+    /// <param name="passwordHash">Новый хэш пароля</param>
+    /// <exception cref="ArgumentException">Выбрасывается, если хэш пустой</exception>
     public void SetPasswordHash(string passwordHash)
     {
         if (string.IsNullOrWhiteSpace(passwordHash))
