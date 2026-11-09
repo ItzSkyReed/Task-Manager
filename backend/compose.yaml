@@ -1,0 +1,40 @@
+﻿services:
+  task_manager:
+    container_name: task_manager
+    environment:
+      - ConnectionStrings__DefaultConnection=Host=task_manager_postgres;Port=5432;Database=task_manager_db;Username=postgres;Password=${DB_PASSWORD} # Пароль из .env
+      - JwtOptions__SecretKey=${JWT_SECRET_KEY} # JWT_SECRET_KEY из .env
+      - ASPNETCORE_ENVIRONMENT=Development
+    image: app
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8080:8080"
+    build:
+      context: .
+      dockerfile: src/API/Dockerfile
+    depends_on:
+      task_manager_postgres:
+        condition: service_healthy
+
+  task_manager_postgres:
+    image: postgres:18-alpine
+    container_name: task_manager_postgres
+    restart: unless-stopped
+    environment:
+      - POSTGRES_DB=task_manager_db
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=${DB_PASSWORD} # Из .env
+      - POSTGRES_PORT=5432
+    ports:
+      - "5432:5432"
+    volumes:
+      - task_manager_postgres_data:/var/lib/postgresql
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d task_manager_db" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+
+volumes:
+  task_manager_postgres_data:
