@@ -19,7 +19,7 @@ public class RegisterCommandValidator : AbstractValidator<RegisterCommand>
 
         RuleFor(x => x.Name)
             .NotEmpty().WithMessage("Имя обязательно.")
-            .MaximumLength(50).WithMessage("Имя не может быть длиннее 50 символов.")
+            .MaximumLength(100).WithMessage("Имя не может быть длиннее 100 символов.")
             .OverridePropertyName("name");
     }
 }

@@ -1,4 +1,6 @@
 ﻿using System.Security.Claims;
+using API.Requests;
+using Application.UseCases.Users.Commands;
 using Application.UseCases.Users.Dtos;
 using Application.UseCases.Users.Queries;
 using Domain.Exceptions.Authentication;
@@ -31,6 +33,28 @@ public static class UserEndpoints
             .ProducesProblem(StatusCodes.Status404NotFound)
             .Produces<UserDto>()
             .WithSummary("Получение информации о пользователе по Email");
+
+        group.MapPatch("/me/name", UpdateUserNameAsync)
+            .Produces<UserDto>()
+            .ProducesValidationProblem()
+            .ProducesProblem(StatusCodes.Status404NotFound)
+            .WithSummary("Изменение имени пользователя на новое");
+
+        group.MapPatch("/me/password", ChangeUserPasswordAsync)
+            .Produces(StatusCodes.Status204NoContent)
+            .ProducesValidationProblem()
+            .ProducesProblem(StatusCodes.Status404NotFound)
+            .WithSummary("Изменение пароля пользователя");
+
+        group.MapDelete("/me", DeleteMeAsync)
+            .Produces(StatusCodes.Status204NoContent)
+            .ProducesProblem(StatusCodes.Status404NotFound)
+            .WithSummary("Удаление своего аккаунта");
+
+        group.MapDelete("/{id:guid}", DeleteUserAsync)
+            .Produces(StatusCodes.Status204NoContent)
+            .ProducesProblem(StatusCodes.Status404NotFound)
+            .WithSummary("Удаление своего аккаунта");
 
     }
 
@@ -70,5 +94,66 @@ public static class UserEndpoints
         var response = await mediator.Send(query, ct);
 
         return Results.Ok(response);
+    }
+
+    private static async Task<IResult> UpdateUserNameAsync(
+        [FromBody] UpdateUserNameRequest request,
+        ClaimsPrincipal principal,
+        [FromServices] ISender mediator,
+        CancellationToken ct)
+    {
+        var userIdClaim = principal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        if (string.IsNullOrEmpty(userIdClaim) || !Guid.TryParse(userIdClaim, out var userId))
+            throw new InvalidAccessTokenException();
+
+        var command = new UpdateUserNameCommand(userId, request.NewName);
+        var response = await mediator.Send(command, ct);
+
+        return Results.Ok(response);
+    }
+
+    private static async Task<IResult> ChangeUserPasswordAsync(
+        [FromBody] ChangeUserPasswordRequest request,
+        ClaimsPrincipal principal,
+        [FromServices] ISender mediator,
+        CancellationToken ct)
+    {
+        var userIdClaim = principal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        if (string.IsNullOrEmpty(userIdClaim) || !Guid.TryParse(userIdClaim, out var userId))
+            throw new InvalidAccessTokenException();
+
+        var command = new ChangeUserPasswordCommand(userId, request.CurrentPassword, request.NewPassword);
+        await mediator.Send(command, ct);
+
+        return Results.NoContent();
+    }
+
+    private static async Task<IResult> DeleteMeAsync(
+        ClaimsPrincipal principal,
+        [FromServices] ISender mediator,
+        CancellationToken ct)
+    {
+        var userIdClaim = principal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        if (string.IsNullOrEmpty(userIdClaim) || !Guid.TryParse(userIdClaim, out var userId))
+            throw new InvalidAccessTokenException();
+
+        var command = new DeleteUserCommand(userId);
+        await mediator.Send(command, ct);
+
+        return Results.NoContent();
+    }
+
+    private static async Task<IResult> DeleteUserAsync(
+        Guid id,
+        [FromServices] ISender mediator,
+        CancellationToken ct)
+    {
+        var command = new DeleteUserCommand(id);
+        await mediator.Send(command, ct);
+
+        return Results.NoContent();
     }
 }
