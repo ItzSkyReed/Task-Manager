@@ -126,6 +126,7 @@ public sealed partial class Program
         var apiV1 = app.MapGroup("/api/v1");
 
         apiV1.MapAuthenticationEndpoints();
+        apiV1.MapProjectEndpoints();
 
         Console.WriteLine(app.Environment.EnvironmentName);
         await app.RunAsync();
