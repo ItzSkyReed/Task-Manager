@@ -17,7 +17,7 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
 
         builder.Property(x => x.Email).UseCollation(AppDbContext.CaseInsensetiveCollation).IsRequired().HasMaxLength(255);
         builder.Property(x => x.PasswordHash).IsRequired().HasMaxLength(255);
-        builder.Property(x => x.Name).IsRequired().HasMaxLength(100);
+        builder.Property(x => x.Name).UseCollation(AppDbContext.CaseInsensetiveCollation).IsRequired().HasMaxLength(100);
 
         builder.HasIndex(x => x.Email).IsUnique().HasDatabaseName("ix_users_email");
     }

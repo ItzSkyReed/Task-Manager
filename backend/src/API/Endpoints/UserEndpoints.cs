@@ -1,5 +1,6 @@
 ﻿using System.Security.Claims;
 using API.Requests;
+using Application.Common.Dtos;
 using Application.UseCases.Users.Commands;
 using Application.UseCases.Users.Dtos;
 using Application.UseCases.Users.Queries;
@@ -18,6 +19,19 @@ public static class UserEndpoints
             .RequireAuthorization()
             .ProducesProblem(StatusCodes.Status400BadRequest)
             .ProducesProblem(StatusCodes.Status401Unauthorized);
+
+        group.MapGet("/", GetUsersAsync)
+            .Produces<PagedResponse<UserDto>>()
+            .ProducesValidationProblem()
+            .WithSummary("Постраничное получение пользователей")
+            .WithDescription("Возвращает список пользователей с пагинацией и опциональным поиском по имени");
+
+        group.MapPost("/", CreateUserAsync)
+            .Produces<UserDto>(StatusCodes.Status201Created)
+            .ProducesProblem(StatusCodes.Status409Conflict)
+            .ProducesValidationProblem()
+            .WithSummary("Добавление нового пользователя")
+            .WithDescription("Создает нового пользователя в системе без смены текущей сессии авторизации");
 
         group.MapGet("/me", GetMeAsync)
             .ProducesProblem(StatusCodes.Status404NotFound)
@@ -72,6 +86,28 @@ public static class UserEndpoints
         var response = await mediator.Send(query, ct);
 
         return Results.Ok(response);
+    }
+
+    private static async Task<IResult> GetUsersAsync(
+        [AsParameters] GetUsersRequest request,
+        [FromServices] ISender mediator,
+        CancellationToken ct)
+    {
+        var query = new GetUsersQuery(request.Search, request.Page, request.PageSize);
+        var result = await mediator.Send(query, ct);
+
+        return Results.Ok(result);
+    }
+
+    private static async Task<IResult> CreateUserAsync(
+        [FromBody] CreateUserRequest request,
+        [FromServices] ISender mediator,
+        CancellationToken ct)
+    {
+        var command = new CreateUserCommand(request.Email, request.Password, request.Name);
+        var userDto = await mediator.Send(command, ct);
+
+        return Results.Created($"/api/users/{userDto.Id}", userDto);
     }
 
     private static async Task<IResult> GetUserByIdAsync(
