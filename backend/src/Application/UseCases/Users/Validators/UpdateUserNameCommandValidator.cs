@@ -3,9 +3,6 @@ using FluentValidation;
 
 namespace Application.UseCases.Users.Validators;
 
-/// <summary>
-/// Валидатор команды изменения имени пользователя <see cref="UpdateUserNameCommand"/>.
-/// </summary>
 public sealed class UpdateUserNameCommandValidator : AbstractValidator<UpdateUserNameCommand>
 {
     public UpdateUserNameCommandValidator()

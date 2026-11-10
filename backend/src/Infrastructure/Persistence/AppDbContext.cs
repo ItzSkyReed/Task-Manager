@@ -21,7 +21,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
 
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
 
-        // Регистранезависимая сортировка, котороая будет использоваться для сравнения email пользователей
+        // Регистранезависимая сортировка
         modelBuilder.HasCollation(name: "case_insensitive", locale: "en-u-ks-primary", provider: "icu", deterministic: false);
 
         // Глобально для всех сущностей преобразуем DateTimeOffset в UTC при отправке в БД
