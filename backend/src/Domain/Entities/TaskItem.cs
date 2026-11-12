@@ -68,7 +68,7 @@ public sealed class TaskItem : BaseEntity
     /// <summary>
     /// Навигационное свойство родительского проекта
     /// </summary>
-    public Project? Project { get; private set; }
+    public Project Project { get; private set; } = null!;
 
     /// <summary>
     /// Идентификатор назначенного исполнителя задачи (null, если задача не назначена)

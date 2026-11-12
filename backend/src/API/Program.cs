@@ -128,6 +128,7 @@ public sealed partial class Program
         apiV1.MapAuthenticationEndpoints();
         apiV1.MapUserEndpoints();
         apiV1.MapProjectEndpoints();
+        apiV1.MapTaskItemEndpoints();
 
         await app.RunAsync();
     }
