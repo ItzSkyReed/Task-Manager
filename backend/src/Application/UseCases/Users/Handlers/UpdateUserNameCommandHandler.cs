@@ -2,7 +2,7 @@
 using Application.UseCases.Users.Commands;
 using Application.UseCases.Users.Dtos;
 using Application.UseCases.Users.Mappers;
-using Domain.Exceptions.User;
+using Domain.Exceptions.Users;
 using Microsoft.EntityFrameworkCore;
 
 namespace Application.UseCases.Users.Handlers;

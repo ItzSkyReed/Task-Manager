@@ -2,7 +2,7 @@
 using Application.UseCases.Users.Dtos;
 using Application.UseCases.Users.Mappers;
 using Application.UseCases.Users.Queries;
-using Domain.Exceptions.User;
+using Domain.Exceptions.Users;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 

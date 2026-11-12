@@ -1,6 +1,6 @@
 ﻿using Application.Interfaces;
 using Application.UseCases.Users.Commands;
-using Domain.Exceptions.User;
+using Domain.Exceptions.Users;
 using Microsoft.EntityFrameworkCore;
 
 namespace Application.UseCases.Users.Handlers;

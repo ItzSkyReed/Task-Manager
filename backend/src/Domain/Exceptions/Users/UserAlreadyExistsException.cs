@@ -1,6 +1,6 @@
 ﻿using Domain.Exceptions.Base;
 
-namespace Domain.Exceptions.User;
+namespace Domain.Exceptions.Users;
 
 public class UserAlreadyExistsException : ConflictException
 {

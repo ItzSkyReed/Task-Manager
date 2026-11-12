@@ -1,5 +1,5 @@
 ﻿using Domain.Exceptions.Base;
 
-namespace Domain.Exceptions.User;
+namespace Domain.Exceptions.Users;
 
 public class WrongUserPasswordException(string user) : UnauthorizedException($"Неправильный пароль пользователя {user}.");

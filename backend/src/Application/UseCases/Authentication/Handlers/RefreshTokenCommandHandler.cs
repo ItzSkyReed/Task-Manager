@@ -4,7 +4,7 @@ using Application.UseCases.Authentication.Commands;
 using Application.UseCases.Authentication.Dtos;
 using Domain.Entities;
 using Domain.Exceptions.Authentication;
-using Domain.Exceptions.User;
+using Domain.Exceptions.Users;
 using Domain.Interfaces;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
