@@ -30,7 +30,9 @@ public class RegisterCommandHandler(
 
         var hashedPassword = passwordHasher.Hash(request.Password);
 
-        var user = new User(request.Email, hashedPassword, request.Name);
+        var normalizedEmail = request.Email.Trim().ToLowerInvariant();
+
+        var user = new User(normalizedEmail, request.Name, hashedPassword);
         var accessToken = jwtProvider.GenerateAccessToken(user);
         var refreshToken = jwtProvider.GenerateRefreshToken();
 

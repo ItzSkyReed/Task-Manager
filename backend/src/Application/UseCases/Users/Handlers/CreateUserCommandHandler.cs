@@ -31,7 +31,7 @@ public sealed class CreateUserCommandHandler(
             throw new UserAlreadyExistsException(request.Email);
 
         var hashedPassword = passwordHasher.Hash(request.Password);
-        var user = new User(normalizedEmail, hashedPassword, request.Name);
+        var user = new User(normalizedEmail, request.Name, hashedPassword);
 
         dbContext.Users.Add(user);
         await dbContext.SaveChangesAsync(cancellationToken);
