@@ -12,7 +12,7 @@ public static class TaskItemEndpoints
 {
     public static void MapTaskItemEndpoints(this IEndpointRouteBuilder app)
     {
-        var group = app.MapGroup("/api/tasks").WithTags("Tasks");
+        var group = app.MapGroup("/tasks").WithTags("Tasks");
 
         group.MapGet("/", GetTaskItemsAsync)
             .Produces<PagedResponse<TaskItemSummaryDto>>()
@@ -99,7 +99,7 @@ public static class TaskItemEndpoints
             request.Status);
 
         var result = await mediator.Send(command, ct);
-        return Results.Created($"/api/tasks/{result.Id}", result);
+        return Results.Created($"/api/v1/tasks/{result.Id}", result);
     }
 
     private static async Task<IResult> PatchTaskItemAsync(

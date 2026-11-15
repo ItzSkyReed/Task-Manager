@@ -107,7 +107,7 @@ public static class UserEndpoints
         var command = new CreateUserCommand(request.Email, request.Password, request.Name);
         var userDto = await mediator.Send(command, ct);
 
-        return Results.Created($"/api/users/{userDto.Id}", userDto);
+        return Results.Created($"/api/v1/users/{userDto.Id}", userDto);
     }
 
     private static async Task<IResult> GetUserByIdAsync(

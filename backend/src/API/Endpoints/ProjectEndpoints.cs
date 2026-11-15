@@ -13,7 +13,7 @@ public static class ProjectEndpoints
 {
     public static void MapProjectEndpoints(this IEndpointRouteBuilder app)
     {
-        var group = app.MapGroup("/api/projects").WithTags("Projects");
+        var group = app.MapGroup("/projects").WithTags("Projects");
 
         group.MapGet("/", GetProjectsAsync)
             .Produces<PagedResponse<ProjectDto>>()
@@ -79,7 +79,7 @@ public static class ProjectEndpoints
         var command = new CreateProjectCommand(request.Name, request.Description, createdByUserId);
         var projectDto = await mediator.Send(command, ct);
 
-        return Results.Created($"/api/projects/{projectDto.Id}", projectDto);
+        return Results.Created($"/api/v1/projects/{projectDto.Id}", projectDto);
     }
 
 
