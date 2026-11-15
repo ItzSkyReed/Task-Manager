@@ -114,9 +114,6 @@ namespace Infrastructure.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("integer");
 
-                    b.Property<Guid?>("UserId")
-                        .HasColumnType("uuid");
-
                     b.HasKey("Id");
 
                     b.HasIndex("AssigneeId")
@@ -127,8 +124,6 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("ProjectId")
                         .HasDatabaseName("ix_task_items_project_id");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("task_items", (string)null);
                 });
@@ -188,7 +183,7 @@ namespace Infrastructure.Migrations
             modelBuilder.Entity("Domain.Entities.TaskItem", b =>
                 {
                     b.HasOne("Domain.Entities.User", "Assignee")
-                        .WithMany()
+                        .WithMany("AssignedTasks")
                         .HasForeignKey("AssigneeId")
                         .OnDelete(DeleteBehavior.SetNull);
 
@@ -197,10 +192,6 @@ namespace Infrastructure.Migrations
                         .HasForeignKey("ProjectId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("Domain.Entities.User", null)
-                        .WithMany("AssignedTasks")
-                        .HasForeignKey("UserId");
 
                     b.Navigation("Assignee");
 

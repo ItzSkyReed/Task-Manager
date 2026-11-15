@@ -33,7 +33,7 @@ public sealed class TaskItemConfiguration : IEntityTypeConfiguration<TaskItem>
 
         // При удалении пользователя задача остается в проекте, но лишается ответственного
         builder.HasOne(x => x.Assignee)
-            .WithMany()
+            .WithMany(u => u.AssignedTasks)
             .HasForeignKey(x => x.AssigneeId)
             .OnDelete(DeleteBehavior.SetNull);
 

@@ -81,7 +81,6 @@ namespace Infrastructure.Migrations
                     Status = table.Column<int>(type: "integer", nullable: false),
                     ProjectId = table.Column<Guid>(type: "uuid", nullable: false),
                     AssigneeId = table.Column<Guid>(type: "uuid", nullable: true),
-                    UserId = table.Column<Guid>(type: "uuid", nullable: true),
                     CreatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
@@ -99,11 +98,6 @@ namespace Infrastructure.Migrations
                         principalTable: "users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.SetNull);
-                    table.ForeignKey(
-                        name: "FK_task_items_users_UserId",
-                        column: x => x.UserId,
-                        principalTable: "users",
-                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateIndex(
@@ -141,11 +135,6 @@ namespace Infrastructure.Migrations
                 name: "ix_task_items_project_id",
                 table: "task_items",
                 column: "ProjectId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_task_items_UserId",
-                table: "task_items",
-                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "ix_users_email",
