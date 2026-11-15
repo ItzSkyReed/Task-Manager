@@ -95,6 +95,18 @@ public sealed partial class Program
             options.AddOperationTransformer<BearerSecurityOperationTransformer>();
         });
 
+        // Регистрация политики CORS для локального фронтенда на Angular
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy("AngularClient", policy =>
+            {
+                policy.WithOrigins("http://localhost:4200")
+                    .AllowAnyHeader()
+                    .AllowAnyMethod()
+                    .AllowCredentials();
+            });
+        });
+
 
         builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
         builder.Services.AddProblemDetails();
@@ -129,6 +141,8 @@ public sealed partial class Program
         apiV1.MapUserEndpoints();
         apiV1.MapProjectEndpoints();
         apiV1.MapTaskItemEndpoints();
+
+        app.UseCors("AngularClient");
 
         await app.RunAsync();
     }
