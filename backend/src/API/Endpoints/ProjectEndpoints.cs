@@ -13,7 +13,10 @@ public static class ProjectEndpoints
 {
     public static void MapProjectEndpoints(this IEndpointRouteBuilder app)
     {
-        var group = app.MapGroup("/projects").WithTags("Projects");
+        var group = app.MapGroup("/projects").WithTags("Projects")
+            .RequireAuthorization()
+            .ProducesProblem(StatusCodes.Status400BadRequest)
+            .ProducesProblem(StatusCodes.Status401Unauthorized);
 
         group.MapGet("/", GetProjectsAsync)
             .Produces<PagedResponse<ProjectDto>>()

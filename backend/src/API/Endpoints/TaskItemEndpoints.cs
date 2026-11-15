@@ -12,7 +12,10 @@ public static class TaskItemEndpoints
 {
     public static void MapTaskItemEndpoints(this IEndpointRouteBuilder app)
     {
-        var group = app.MapGroup("/tasks").WithTags("Tasks");
+        var group = app.MapGroup("/tasks").WithTags("Tasks")
+            .RequireAuthorization()
+            .ProducesProblem(StatusCodes.Status400BadRequest)
+            .ProducesProblem(StatusCodes.Status401Unauthorized);
 
         group.MapGet("/", GetTaskItemsAsync)
             .Produces<PagedResponse<TaskItemSummaryDto>>()
