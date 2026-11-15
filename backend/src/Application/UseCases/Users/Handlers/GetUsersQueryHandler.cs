@@ -19,10 +19,10 @@ public sealed class GetUsersQueryHandler(IAppDbContext dbContext)
 
         if (!string.IsNullOrWhiteSpace(request.Search))
         {
-            var searchTerm = request.Search.Trim().ToLower();
+            var searchTerm = request.Search.Trim();
             var pattern = $"%{searchTerm}%";
 
-            query = query.Where(u => EF.Functions.Like(u.Name.ToLower(), pattern));
+            query = query.Where(u => EF.Functions.Like(u.Name, pattern));
         }
 
         var totalCount = await query.CountAsync(cancellationToken);
