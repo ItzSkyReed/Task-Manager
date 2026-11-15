@@ -3,11 +3,13 @@ using Application.UseCases.Users.Commands;
 using Application.UseCases.Users.Dtos;
 using Application.UseCases.Users.Mappers;
 using Domain.Exceptions.Users;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace Application.UseCases.Users.Handlers;
 
 public sealed class UpdateUserNameCommandHandler(IAppDbContext dbContext)
+    : IRequestHandler<UpdateUserNameCommand, UserDto>
 {
     public async Task<UserDto> Handle(
         UpdateUserNameCommand command,

@@ -1,6 +1,7 @@
 ﻿using Application.Interfaces;
 using Application.UseCases.Users.Commands;
 using Domain.Exceptions.Users;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace Application.UseCases.Users.Handlers;
@@ -8,6 +9,7 @@ namespace Application.UseCases.Users.Handlers;
 public sealed class ChangeUserPasswordCommandHandler(
     IAppDbContext dbContext,
     IPasswordHasher passwordHasher)
+    : IRequestHandler<ChangeUserPasswordCommand>
 {
     public async Task Handle(
         ChangeUserPasswordCommand command,

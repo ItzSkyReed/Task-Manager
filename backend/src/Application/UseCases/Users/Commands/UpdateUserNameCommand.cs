@@ -1,3 +1,6 @@
-﻿namespace Application.UseCases.Users.Commands;
+﻿using Application.UseCases.Users.Dtos;
+using MediatR;
 
-public sealed record UpdateUserNameCommand(Guid UserId, string NewName);
+namespace Application.UseCases.Users.Commands;
+
+public sealed record UpdateUserNameCommand(Guid UserId, string NewName) : IRequest<UserDto>;

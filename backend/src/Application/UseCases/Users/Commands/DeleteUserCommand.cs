@@ -1,3 +1,5 @@
-﻿namespace Application.UseCases.Users.Commands;
+﻿using MediatR;
 
-public sealed record DeleteUserCommand(Guid UserId);
+namespace Application.UseCases.Users.Commands;
+
+public sealed record DeleteUserCommand(Guid UserId) : IRequest;
