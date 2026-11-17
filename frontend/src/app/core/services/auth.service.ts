@@ -17,21 +17,11 @@ export class AuthService {
   private http = inject(HttpClient);
   private router = inject(Router);
 
-  // Сигналы для хранения состояния авторизации
+  // Сигнал для хранения текущего пользователя
   private currentUserSignal = signal<UserDto | null>(null);
   public currentUser = this.currentUserSignal.asReadonly();
 
   private accessTokenKey = 'access_token';
-
-  constructor() {
-    // При старте приложения пытаемся подтянуть профиль, если есть сохраненный токен
-    const token = this.getToken();
-    if (token) {
-      this.getMe().subscribe({
-        error: () => this.logoutLocally()
-      });
-    }
-  }
 
   // Получить текущий accessToken из localStorage
   public getToken(): string | null {

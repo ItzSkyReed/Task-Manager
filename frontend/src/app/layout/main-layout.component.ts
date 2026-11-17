@@ -1,4 +1,4 @@
-﻿import { Component, inject } from '@angular/core';
+﻿import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../core/services/auth.service';
@@ -23,7 +23,7 @@ import { MatIconModule } from '@angular/material/icon';
   ],
   template: `
     <div class="layout-container">
-
+      <!-- Верхняя панель управления -->
       <mat-toolbar color="primary" class="toolbar">
         <span class="app-title">TaskManager</span>
 
@@ -33,26 +33,29 @@ import { MatIconModule } from '@angular/material/icon';
           <span class="user-info">{{ user.name }} ({{ user.email }})</span>
         }
 
-        <button mat-stroked-button color="warn" (click)="onLogout()" class="logout-btn">
+        <button mat-stroked-button (click)="onLogout()" class="logout-btn">
           Выйти
         </button>
       </mat-toolbar>
 
-
-      <nav mat-tab-nav-bar [backgroundColor]="'primary'">
-        <a mat-tab-link
-           *ngFor="let link of navLinks"
-           [routerLink]="link.path"
-           routerLinkActive #rla="routerLinkActive"
-           [active]="rla.isActive">
-          {{ link.label }}
-        </a>
+      <!-- Панель вкладок с обязательной привязкой [tabPanel] -->
+      <nav mat-tab-nav-bar [tabPanel]="tabPanel" backgroundColor="primary">
+        @for (link of navLinks; track link.path) {
+          <a mat-tab-link
+             [routerLink]="link.path"
+             routerLinkActive #rla="routerLinkActive"
+             [active]="rla.isActive">
+            {{ link.label }}
+          </a>
+        }
       </nav>
 
-
-      <main class="content">
-        <router-outlet></router-outlet>
-      </main>
+      <!-- Панель содержимого вкладок -->
+      <mat-tab-nav-panel #tabPanel class="tab-panel">
+        <main class="content">
+          <router-outlet></router-outlet>
+        </main>
+      </mat-tab-nav-panel>
     </div>
   `,
   styles: [`
@@ -70,32 +73,38 @@ import { MatIconModule } from '@angular/material/icon';
     }
     .logout-btn {
       color: white;
-      border-color: rgba(255,255,255,0.5);
+      border-color: rgba(255, 255, 255, 0.5);
+    }
+    .tab-panel {
+      flex: 1;
+      overflow-y: auto;
+      background-color: #fafafa;
     }
     .content {
-      flex: 1;
       padding: 24px;
-      background-color: #fafafa;
-      overflow-y: auto;
     }
   `]
 })
-export class MainLayoutComponent {
+export class MainLayoutComponent implements OnInit {
   public authService = inject(AuthService);
 
-  // Ссылки на вкладки
   navLinks = [
     { path: '/projects', label: 'Проекты' },
     { path: '/tasks', label: 'Задачи' },
     { path: '/users', label: 'Пользователи' }
   ];
 
+  ngOnInit(): void {
+    // Если токен есть в localStorage, а данные пользователя в памяти пусты, подгружаем профиль
+    if (this.authService.getToken() && !this.authService.currentUser()) {
+      this.authService.getMe().subscribe();
+    }
+  }
+
   onLogout(): void {
     this.authService.logout().subscribe({
-      next: () => {},
       error: () => {
-
-        this.authService.logoutLocally(); // выходим даже при ошибке
+        this.authService.logoutLocally();
       }
     });
   }
