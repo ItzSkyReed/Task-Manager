@@ -36,10 +36,10 @@ public sealed class ExceptionTranslationInterceptor : SaveChangesInterceptor
         // Обрабатывает случай, если проект успел удалиться за доли секунды до попытки создать в нем задачу и получился foreign_key_violation exception
         if (pgEx.SqlState == PostgresErrorCodes.ForeignKeyViolation)
         {
-            if (pgEx.ConstraintName?.Contains("project_id") == true)
+            if (pgEx.ConstraintName?.Contains("ProjectId", StringComparison.OrdinalIgnoreCase) == true)
                 throw new ProjectNotFoundException(Guid.Empty);
 
-            if (pgEx.ConstraintName?.Contains("assignee_id") == true)
+            if (pgEx.ConstraintName?.Contains("AssigneeId", StringComparison.OrdinalIgnoreCase) == true)
                 throw new UserNotFoundException(Guid.Empty);
         }
 
