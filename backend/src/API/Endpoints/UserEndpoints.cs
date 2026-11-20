@@ -68,7 +68,7 @@ public static class UserEndpoints
         group.MapDelete("/{id:guid}", DeleteUserAsync)
             .Produces(StatusCodes.Status204NoContent)
             .ProducesProblem(StatusCodes.Status404NotFound)
-            .WithSummary("Удаление своего аккаунта");
+            .WithSummary("Удаление пользователя по ID");
 
     }
 
