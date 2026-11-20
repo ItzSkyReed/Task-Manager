@@ -27,13 +27,16 @@ public partial class GlobalExceptionHandler(
                 problemDetails.Detail = "Запрос имеет неверный формат (синтаксическая ошибка в JSON или некорректные заголовки).";
                 break;
 
-            // Ошибки валидации от FluentValidation
+            // Ошибки валидации от FluentValidation (формат словаря, совместимый с ValidationProblemDetails)
             case ValidationException validationException:
                 problemDetails.Title = "Ошибка валидации запроса";
                 problemDetails.Status = StatusCodes.Status400BadRequest;
                 problemDetails.Detail = "Один или несколько параметров не прошли проверку.";
                 problemDetails.Extensions["errors"] = validationException.Errors
-                    .Select(e => new { e.PropertyName, e.ErrorMessage });
+                    .GroupBy(e => e.PropertyName)
+                    .ToDictionary(
+                        g => g.Key,
+                        g => g.Select(e => e.ErrorMessage).Distinct().ToArray());
                 break;
 
             // Неверный пароль, обращение к защищенным эндпоинтам без Access Token
@@ -71,8 +74,9 @@ public partial class GlobalExceptionHandler(
                 problemDetails.Status = StatusCodes.Status400BadRequest;
                 problemDetails.Detail = badRequestException.Message;
 
+                // Кладём имя поля в "fields", как в ConflictException, чтобы не конфликтовать со словарём "errors"
                 if (badRequestException.Field != null)
-                    problemDetails.Extensions["errors"] = new[] { badRequestException.Field };
+                    problemDetails.Extensions["fields"] = new[] { badRequestException.Field };
                 break;
 
             // Все остальные непредвиденные ошибки

@@ -21,11 +21,12 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
           errorMessage = problem.title;
         }
 
-        // Если это ошибки валидации от fluent validation
-        if (problem.errors) {
+        // Если это ошибки валидации от FluentValidation (словарь Record<string, string[]>)
+        if (problem.errors && typeof problem.errors === 'object' && !Array.isArray(problem.errors)) {
           const firstKey = Object.keys(problem.errors)[0];
-          if (firstKey && problem.errors[firstKey].length > 0) {
-            errorMessage = problem.errors[firstKey][0];
+          const fieldErrors = firstKey ? problem.errors[firstKey] : null;
+          if (Array.isArray(fieldErrors) && fieldErrors.length > 0) {
+            errorMessage = fieldErrors[0];
           }
         }
       } else if (error.message) {
