@@ -1,0 +1,53 @@
+﻿services:
+  # База данных
+  task_manager_postgres:
+    image: postgres:18-alpine
+    container_name: task_manager_postgres
+    restart: unless-stopped
+    environment:
+      - POSTGRES_DB=task_manager_db
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=${DB_PASSWORD:-super_secret_password}
+    ports:
+      - "5432:5432"
+    volumes:
+      - task_manager_postgres_data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d task_manager_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # Бэкенд
+  task_manager:
+    container_name: task_manager
+    image: task-manager-api
+    restart: unless-stopped
+    environment:
+      - ConnectionStrings__DefaultConnection=Host=task_manager_postgres;Port=5432;Database=task_manager_db;Username=postgres;Password=${DB_PASSWORD:-super_secret_password}
+      - JwtOptions__SecretKey=${JWT_SECRET_KEY:-super_secret_key_minimum_32_symbols_long_123_123}
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "8080:8080"
+    build:
+      context: ./backend
+      dockerfile: src/API/Dockerfile
+    depends_on:
+      task_manager_postgres:
+        condition: service_healthy
+
+  # Фронтенд + nginx
+  task_manager_frontend:
+    container_name: task_manager_frontend
+    image: task-manager-frontend
+    restart: unless-stopped
+    ports:
+      - "4200:80"
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    depends_on:
+      - task_manager
+
+volumes:
+  task_manager_postgres_data:
