@@ -159,7 +159,7 @@ export interface TaskDetailsDialogData {
 
               <mat-form-field appearance="outline" class="full-width">
                 <mat-label>Описание</mat-label>
-                <textarea matInput formControlName="description" rows="5" maxlength="5000"></textarea>
+                <textarea matInput formControlName="description" rows="5" maxlength="4000"></textarea>
               </mat-form-field>
           </form>
           }
@@ -312,7 +312,7 @@ export class TaskDetailsDialogComponent implements OnInit {
     projectId: [null, [Validators.required]],
     status: ['ToDo' as TaskItemStatus, [Validators.required]],
     assigneeId: [null as string | null],
-    description: ['', [Validators.maxLength(5000)]]
+    description: ['', [Validators.maxLength(4000)]]
   });
 
   ngOnInit(): void {

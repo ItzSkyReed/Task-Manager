@@ -89,7 +89,7 @@ import { TASK_STATUS_OPTIONS } from './task-status.constants';
                       formControlName="description"
                       rows="4"
                       placeholder="Подробное описание задачи (необязательно)"
-                      maxlength="5000"></textarea>
+                      maxlength="4000"></textarea>
           </mat-form-field>
         </form>
       }
@@ -158,7 +158,7 @@ export class TaskCreateDialogComponent implements OnInit {
     projectId: [null, [Validators.required]],
     status: ['ToDo' as TaskItemStatus, [Validators.required]],
     assigneeId: [null as string | null],
-    description: ['', [Validators.maxLength(5000)]]
+    description: ['', [Validators.maxLength(4000)]]
   });
 
   ngOnInit(): void {
