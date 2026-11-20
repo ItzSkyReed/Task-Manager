@@ -22,15 +22,15 @@ public class RegisterCommandHandler(
 {
     public async Task<(AuthResponseDto Body, string RefreshToken)> Handle(RegisterCommand request, CancellationToken cancellationToken)
     {
+        var normalizedEmail = request.Email.Trim().ToLowerInvariant();
+
         var emailExists = await dbContext.Users
-            .AsNoTracking().AnyAsync(u => u.Email == request.Email, cancellationToken);
+            .AsNoTracking().AnyAsync(u => u.Email == normalizedEmail, cancellationToken);
 
         if (emailExists)
             throw new UserAlreadyExistsException(request.Email);
 
         var hashedPassword = passwordHasher.Hash(request.Password);
-
-        var normalizedEmail = request.Email.Trim().ToLowerInvariant();
 
         var user = new User(normalizedEmail, request.Name, hashedPassword);
         var accessToken = jwtProvider.GenerateAccessToken(user);
