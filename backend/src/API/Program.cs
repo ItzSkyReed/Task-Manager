@@ -132,6 +132,7 @@ public sealed partial class Program
         }
 
         app.UseExceptionHandler();
+        app.UseCors("AngularClient");
         app.UseAuthentication();
         app.UseAuthorization();
 
@@ -142,7 +143,6 @@ public sealed partial class Program
         apiV1.MapProjectEndpoints();
         apiV1.MapTaskItemEndpoints();
 
-        app.UseCors("AngularClient");
 
         await app.RunAsync();
     }
