@@ -1,7 +1,7 @@
 ﻿import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { Observable, tap } from 'rxjs';
+import { Observable, finalize, shareReplay, tap } from 'rxjs';
 import {
   AuthResponseDto,
   AccessTokenDto,
@@ -61,19 +61,33 @@ export class AuthService {
       );
   }
 
+
+  // Кэш текущего запроса на обновление токена для защиты от гонки при параллельных 401
+  private refreshRequest$: Observable<AccessTokenDto> | null = null;
+
   // Обновление токена (вызывается при 401)
   public refresh(): Observable<AccessTokenDto> {
-    return this.http
-      .post<AccessTokenDto>(
-        '/api/v1/auth/refresh',
-        {},
-        { withCredentials: true }
-      )
-      .pipe(
-        tap((response) => {
-          this.setToken(response.accessToken);
-        })
-      );
+    if (!this.refreshRequest$) {
+      this.refreshRequest$ = this.http
+        .post<AccessTokenDto>(
+          '/api/v1/auth/refresh',
+          {},
+          { withCredentials: true }
+        )
+        .pipe(
+          tap((response) => {
+            this.setToken(response.accessToken);
+          }),
+          // finalize обязательно должен идти до shareReplay,
+          // чтобы сброс происходил ровно один раз при завершении HTTP-запроса
+          finalize(() => {
+            this.refreshRequest$ = null;
+          }),
+          shareReplay(1)
+        );
+    }
+
+    return this.refreshRequest$;
   }
 
   // Получить данные текущего пользователя
