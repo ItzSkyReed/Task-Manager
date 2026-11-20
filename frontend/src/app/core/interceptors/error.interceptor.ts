@@ -33,7 +33,7 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
       }
 
       // Не показываем ошибку 401 т.к она обрабатывается auth interceptoром
-      if (error.status !== 401) {
+      if (error.status !== 401 || req.url.includes('/auth/login')) {
         snackBar.open(errorMessage, 'Закрыть', {
           duration: 5000,
           horizontalPosition: 'end',
