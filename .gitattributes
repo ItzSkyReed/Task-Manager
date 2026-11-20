@@ -1,0 +1,10 @@
+﻿# Автоматическая нормализация текстовых файлов
+* text=auto
+
+# Фиксируем LF для конфигов и файлов Docker, чтобы не ломались в Linux-контейнерах при клоне с core.autocrlf=true
+*.conf text eol=lf
+*.sh text eol=lf
+Dockerfile text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.json text eol=lf
