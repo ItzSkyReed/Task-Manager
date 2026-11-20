@@ -1,4 +1,4 @@
-﻿import { Component, OnInit, inject } from '@angular/core';
+﻿import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 
 import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../core/services/auth.service';
@@ -57,6 +57,7 @@ import { MatIconModule } from '@angular/material/icon';
       </mat-tab-nav-panel>
     </div>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: [`
     .layout-container {
       display: flex;

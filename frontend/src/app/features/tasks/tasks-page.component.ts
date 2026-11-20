@@ -1,4 +1,4 @@
-﻿import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
+﻿import { Component, DestroyRef, OnInit, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -26,8 +26,6 @@ import { TaskCreateDialogComponent } from './task-create-dialog.component';
 import { TaskDetailsDialogComponent } from './task-details-dialog.component';
 import { TASK_STATUS_LABELS, TASK_STATUS_OPTIONS } from './task-status.constants';
 
-// @ts-ignore
-// @ts-ignore
 @Component({
   selector: 'app-tasks-page',
   standalone: true,
@@ -177,6 +175,7 @@ import { TASK_STATUS_LABELS, TASK_STATUS_OPTIONS } from './task-status.constants
       </div>
     </div>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: [`
     .page-container {
       max-width: 1200px;
