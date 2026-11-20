@@ -1,5 +1,5 @@
 ﻿import { Component, inject, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -12,14 +12,13 @@ import { UsersService } from '../../core/services/users.service';
   selector: 'app-user-create-dialog',
   standalone: true,
   imports: [
-    CommonModule,
     ReactiveFormsModule,
     MatDialogModule,
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
     MatIconModule
-  ],
+],
   template: `
     <h2 mat-dialog-title>Добавление пользователя</h2>
 

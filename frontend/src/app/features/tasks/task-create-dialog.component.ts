@@ -1,5 +1,5 @@
 ﻿import { Component, OnInit, inject, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { forkJoin } from 'rxjs';
 
@@ -20,7 +20,6 @@ import { TASK_STATUS_OPTIONS } from './task-status.constants';
   selector: 'app-task-create-dialog',
   standalone: true,
   imports: [
-    CommonModule,
     ReactiveFormsModule,
     MatDialogModule,
     MatFormFieldModule,
@@ -28,7 +27,7 @@ import { TASK_STATUS_OPTIONS } from './task-status.constants';
     MatSelectModule,
     MatButtonModule,
     MatProgressSpinnerModule
-  ],
+],
   template: `
     <h2 mat-dialog-title>Создание задачи</h2>
 

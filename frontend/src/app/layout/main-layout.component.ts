@@ -1,5 +1,5 @@
 ﻿import { Component, OnInit, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../core/services/auth.service';
 
@@ -12,7 +12,6 @@ import { MatIconModule } from '@angular/material/icon';
   selector: 'app-main-layout',
   standalone: true,
   imports: [
-    CommonModule,
     RouterOutlet,
     RouterLink,
     RouterLinkActive,
@@ -20,7 +19,7 @@ import { MatIconModule } from '@angular/material/icon';
     MatButtonModule,
     MatTabsModule,
     MatIconModule
-  ],
+],
   template: `
     <div class="layout-container">
       <!-- Верхняя панель управления -->
