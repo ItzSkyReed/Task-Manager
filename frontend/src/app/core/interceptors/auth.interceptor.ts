@@ -19,14 +19,28 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
   return next(authReq).pipe(
     catchError((error: HttpErrorResponse) => {
-      // Игнорируем ошибку 401 для самих эндпоинтов логина/рефреша, чтобы избежать бесконечного цикла
-      const isAuthUrl = req.url.includes('/auth/login') || req.url.includes('/auth/refresh');
+      // Не пытаемся обновлять токен на самих эндпоинтах авторизации
+      const isAuthUrl =
+        req.url.includes('/auth/login') ||
+        req.url.includes('/auth/register') ||
+        req.url.includes('/auth/refresh') ||
+        req.url.includes('/auth/logout');
 
       if (error.status === 401 && !isAuthUrl) {
-        // Пробуем обновить токен через рефреш куки
+        // Если другой параллельный запрос уже обновил токен, сразу повторяем запрос с ним
+        const latestToken = authService.getToken();
+        if (latestToken && latestToken !== token) {
+          const retryReq = req.clone({
+            setHeaders: {
+              Authorization: `Bearer ${latestToken}`
+            }
+          });
+          return next(retryReq);
+        }
+
+        // Иначе запускаем (или ждём уже запущенный) общий запрос обновления токена
         return authService.refresh().pipe(
           switchMap((newTokenResponse) => {
-            // Повторяем исходный запрос с новым токеном
             const retryReq = req.clone({
               setHeaders: {
                 Authorization: `Bearer ${newTokenResponse.accessToken}`
@@ -35,7 +49,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
             return next(retryReq);
           }),
           catchError((refreshError) => {
-            // Если рефреш не удался то разлогиниваемся
+            // Если refresh-токен недействителен — очищаем сессию и переводим на вход
             authService.logoutLocally();
             return throwError(() => refreshError);
           })
